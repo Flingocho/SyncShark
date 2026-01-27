@@ -1,0 +1,33 @@
+# Environment variables
+.env
+
+# Session data (contains sensitive info like cookies, tokens)
+session-data/
+
+# Downloaded file tracking (may contain sensitive paths)
+last_downloaded_file.txt
+
+# User data directory (browser profile)
+user-data/
+user-data-salesforce/
+user-data-sharepoint/
+user-data-workspace/
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc

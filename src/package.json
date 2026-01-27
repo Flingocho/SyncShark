@@ -1,0 +1,32 @@
+{
+  "name": "syncshark",
+  "version": "2.1.0",
+  "description": "Automated pipeline: Salesforce Analytics → Excel Validation → SharePoint Upload → Workspace Refresh",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --inspect",
+    "check": "node check-config.js",
+    "pipeline": "node run_full_pipeline.js",
+    "pipeline:manual": "node run_full_pipeline.js --manual-login",
+    "download": "node download_telemetry.js",
+    "validate": "node validate_excel.js",
+    "upload": "node upload_sp_telemetry.js",
+    "refresh": "node refresh_workspace.js",
+    "test": "jest",
+    "n8n": "n8n"
+  },
+  "keywords": ["salesforce", "sharepoint", "automation", "syncshark", "electron", "powerbi"],
+  "author": "Jaime Vidal",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "n8n": "^1.118.1",
+    "puppeteer": "^24.29.0"
+  },
+  "devDependencies": {
+    "electron": "^39.2.7",
+    "jest": "^29.7.0"
+  }
+}
