@@ -484,8 +484,7 @@ Uso de `userDataDir` de Puppeteer para persistir sesiones del navegador.
 {
   "puppeteer": "^24.29.0",
   "dotenv": "^17.2.3",
-  "electron": "^39.2.7",
-  "n8n": "^1.118.1"
+  "electron": "^39.2.7"
 }
 ```
 
