@@ -12,8 +12,8 @@ echo.
 REM Verificar que estamos en la rama main
 for /f "tokens=*" %%a in ('git branch --show-current') do set CURRENT_BRANCH=%%a
 
-if not "%CURRENT_BRANCH%"=="main" (
-    echo ERROR: Debes estar en la rama main para publicar un release
+if not "%CURRENT_BRANCH%"=="main" if not "%CURRENT_BRANCH%"=="master" (
+    echo ERROR: Debes estar en la rama main o master para publicar un release
     echo Rama actual: %CURRENT_BRANCH%
     pause
     exit /b 1
@@ -91,7 +91,7 @@ if errorlevel 1 (
 )
 
 echo [4/5] Haciendo push del commit...
-git push origin main
+git push origin %CURRENT_BRANCH%
 if errorlevel 1 (
     echo ERROR: No se pudo hacer push del commit
     pause
@@ -114,18 +114,15 @@ echo.
 echo Tag: v%VERSION%
 echo.
 echo Ahora debes:
-echo 1. Ir a GitHub.com/tu-usuario/tu-repo/releases
-echo 2. Encontrar el tag v%VERSION%
-echo 3. Hacer clic en "Create release from tag"
-echo 4. Agregar notas detalladas del release
-echo 5. Publicar el release
+echo 1. Agregar notas detalladas del release en GitHub
+echo 2. Hacer clic en "Publish release"
 echo.
 echo Los usuarios seran notificados automaticamente
 echo de la nueva version al iniciar la aplicacion.
 echo.
 echo Presiona cualquier tecla para abrir GitHub...
 pause > nul
-start https://github.com/OWNER/REPO/releases/new?tag=v%VERSION%
+start https://github.com/Flingocho/SyncShark/releases/new?tag=v%VERSION%
 
 echo.
 echo Listo!
