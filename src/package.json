@@ -1,6 +1,6 @@
 {
   "name": "syncshark",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Automated pipeline: Salesforce Analytics → Excel Validation → SharePoint Upload → Workspace Refresh",
   "main": "electron/main.js",
   "repository": "Flingocho/SyncShark",
@@ -17,7 +17,14 @@
     "test": "jest",
     "n8n": "n8n"
   },
-  "keywords": ["salesforce", "sharepoint", "automation", "syncshark", "electron", "powerbi"],
+  "keywords": [
+    "salesforce",
+    "sharepoint",
+    "automation",
+    "syncshark",
+    "electron",
+    "powerbi"
+  ],
   "author": "Jaime Vidal",
   "license": "ISC",
   "type": "commonjs",
