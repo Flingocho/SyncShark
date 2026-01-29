@@ -7,12 +7,40 @@
 
 **Automatización del proceso de descarga, validación y publicación de telemetría de negocio desde Salesforce Analytics hacia Power BI.**
 
-
 ![GUI](src/assets/GUI.png)
+
+## 🚀 Instalación Rápida
+
+### Para Usuarios
+
+1. **Descargar**: Haz clic en **"Code"** → **"Download ZIP"**
+2. **Descomprimir** en cualquier carpeta
+3. **Ejecutar** `install.bat` (doble clic)
+4. **Configurar** credenciales en `src\.env`
+5. **Usar** acceso directo en el escritorio
+
+Ver [INSTALL-GUIDE.md](INSTALL-GUIDE.md) para más detalles.
+
+### Requisitos
+
+- Node.js 18+ ([Descargar](https://nodejs.org/))
+- Python 3.8+ ([Descargar](https://www.python.org/downloads/))
+- Git (opcional, para actualizaciones automáticas)
+
+---
 
 ## Descripción
 
 Sistema automatizado que elimina la intervención manual en el flujo de datos de telemetría, reduciendo el tiempo de procesamiento de ~30 minutos a menos de 5 minutos y eliminando errores humanos en la manipulación de datos.
+
+### ✨ Características Principales
+
+- 🎯 **Instalación con 1 clic** - Instalador automático sin configuración manual
+- 🔄 **Auto-actualización** - Notificaciones automáticas de nuevas versiones
+- 🖥️ **Interfaz gráfica profesional** - Aplicación Electron con logs en tiempo real
+- 🔐 **Gestión inteligente de sesiones** - Login automático con persistencia de credenciales
+- 📊 **Validación automática** - Verificación de integridad de datos
+- 🚫 **Sin ventanas molestas** - Ejecución invisible sin terminales
 
 ### Problema Resuelto
 
@@ -28,7 +56,7 @@ Anteriormente, el proceso requería:
 
 ### Solución Implementada
 
-Pipeline completamente automatizado con interfaz gráfica que ejecuta todo el flujo con un solo clic, incluyendo manejo inteligente de sesiones y validación automática de datos.
+Pipeline completamente automatizado con interfaz gráfica que ejecuta todo el flujo con un solo clic, incluyendo manejo inteligente de sesiones, validación automática de datos y sistema profesional de actualizaciones.
 
 ---
 
@@ -319,30 +347,136 @@ node-project/
 ## Patrones de Diseño Implementados
 
 ### 1. Separation of Concerns
+---
+
+## 📂 Estructura del Proyecto
+
+```
+SyncShark/
+├── install.bat              # Instalador automático
+├── launch.vbs               # Lanzador invisible (sin terminal)
+├── publish-release.bat      # Publicar releases (solo admin)
+├── INSTALL-GUIDE.md         # Guía de instalación
+├── RELEASES.md              # Documentación de releases
+├── src/
+│   ├── .env                 # Configuración y credenciales
+│   ├── package.json         # Dependencias del proyecto
+│   ├── electron/            # Aplicación de escritorio
+│   │   ├── main.js          # Proceso principal + Auto-updater
+│   │   ├── renderer.js      # Lógica de UI
+│   │   ├── preload.js       # Puente seguro IPC
+│   │   └── index.html       # Interfaz gráfica
+│   ├── lib/                 # Módulos principales
+│   │   ├── auto-updater.js  # Sistema de actualizaciones
+│   │   ├── auth-handler.js
+│   │   ├── constants.js
+│   │   ├── file-utils.js
+│   │   ├── salesforce-downloader.js
+│   │   ├── salesforce-login.js
+│   │   ├── salesforce-navigation.js
+│   │   └── session-manager.js
+│   ├── run_full_pipeline.js # Orquestador principal
+│   ├── download_telemetry.js
+│   ├── validate_excel.js
+│   ├── upload_sp_telemetry.js
+│   ├── upload.pyw           # Gestor de diálogos Windows
+│   └── refresh_workspace.js
+└── session-data/            # Datos de sesión persistentes
+    ├── salesforce/
+    ├── sharepoint/
+    └── workspace/
+```
+
+---
+
+## 🚀 Uso
+
+### Ejecución desde Electron GUI
+
+1. Doble clic en el acceso directo del escritorio (o `launch.vbs`)
+2. Seleccionar modo de ejecución:
+   - **Automático**: Completamente invisible
+   - **Supervisado**: Ventana visible para supervisión
+   - **Manual**: Para completar login manualmente
+3. Seleccionar workspace a actualizar (opcional):
+   - KPIS / Defensa / Sectores / Nada
+4. Click en el botón correspondiente
+5. Ver logs en tiempo real
+
+### Modos de Ejecución
+
+#### 🤖 Modo Automático (Recomendado)
+- Ejecución completamente invisible
+- Login automático si hay sesión guardada
+- Ideal para ejecución diaria
+
+#### 👁️ Modo Supervisado
+- Ventana visible pero automatizada
+- Útil para verificar el proceso
+- Debugging y resolución de problemas
+
+#### 👤 Modo Manual
+- Login manual en Salesforce
+- Resto del proceso automático
+- Para autenticación 2FA
+
+### Actualización de Credenciales
+
+1. Desde la GUI: Click en "Actualizar Credenciales Workspace"
+2. Completa el login en el navegador que se abre
+3. Las credenciales se guardan automáticamente
+
+### Borrar Credenciales
+
+Click en "⚠️ Borrar TODAS las Credenciales" para resetear todas las sesiones guardadas.
+
+---
+
+## 🔄 Sistema de Actualizaciones
+
+SyncShark incluye un sistema profesional de auto-actualización:
+
+- ✅ **Verificación automática** al iniciar la aplicación
+- ✅ **Notificación elegante** cuando hay nueva versión
+- ✅ **Actualización con 1 clic** - Descarga e instala automáticamente
+- ✅ **Backup automático** - Restauración en caso de error
+- ✅ **Changelog integrado** - Ver qué cambió en cada versión
+
+Ver [RELEASES.md](RELEASES.md) para más detalles sobre el sistema de releases.
+
+---
+
+## 🛠️ Arquitectura Técnica
+
+### Principios de Diseño
+
+#### 1. Separación de Responsabilidades
 Cada módulo tiene una responsabilidad única y bien definida:
 - `session-manager.js`: Solo gestión de sesiones
 - `salesforce-navigation.js`: Solo navegación en UI
 - `file-utils.js`: Solo operaciones de archivos
+- `auto-updater.js`: Solo sistema de actualizaciones
 
-### 2. Dependency Injection
+#### 2. Dependency Injection
 Los módulos reciben dependencias como parámetros (page, browser) en lugar de crearlas internamente.
 
-### 3. Error Handling
+#### 3. Error Handling
 Manejo consistente de errores con try-catch y códigos de salida apropiados.
 
-### 4. Configuration Management
+#### 4. Configuration Management
 Centralización de configuración en `constants.js` y variables de entorno.
 
-### 5. State Persistence
+#### 5. State Persistence
 Uso de `userDataDir` de Puppeteer para persistir sesiones del navegador.
 
 ---
 
-## Requisitos del Sistema
+## 📋 Requisitos del Sistema
 
 ### Software Requerido
 - **Node.js** 18+ (incluye npm)
 - **Python** 3.8+
+- **Git** (opcional, para actualizaciones automáticas)
 - **Windows** 10 o superior
 
 ### Dependencias Node.js
@@ -360,16 +494,7 @@ Uso de `userDataDir` de Puppeteer para persistir sesiones del navegador.
 pywinauto
 ```
 
----
-
-## Instalación
-
-Para instalación detallada, consultar [INSTALLATION.md](INSTALLATION.md)
-
-### Instalación Rápida
-
-1. Ejecutar `setup.bat`
-2. Configurar archivo `.env` con credenciales
+El instalador `install.bat` se encarga de instalar todas las dependencias automáticamente.
 3. Ejecutar aplicación desde acceso directo del escritorio
 
 ---
@@ -422,6 +547,59 @@ La interfaz ofrece tres modos de ejecución y gestión de credenciales:
 ### Línea de Comandos
 
 ```bash
+---
+
+## 👨‍💻 Para Desarrolladores
+
+### Publicar Nueva Versión
+
+```bash
+# Commitear todos los cambios
+git add .
+git commit -m "feat: Nueva funcionalidad"
+git push
+
+# Publicar release (actualiza version, crea tag, sube a GitHub)
+.\publish-release.bat
+```
+
+El script `publish-release.bat`:
+1. ✅ Verifica que estés en main/master sin cambios pendientes
+2. ✅ Actualiza la versión en package.json
+3. ✅ Crea commit y tag con la nueva versión
+4. ✅ Hace push a GitHub
+5. ✅ Abre la página para completar las notas del release
+
+Ver [RELEASES.md](RELEASES.md) para documentación completa del sistema de releases.
+
+### Estructura Modular
+
+#### Scripts de Pipeline
+- `run_full_pipeline.js` - Orquestador principal que ejecuta todo el flujo
+- `download_telemetry.js` - Descarga desde Salesforce Analytics
+- `validate_excel.js` - Validación de formato Excel
+- `upload_sp_telemetry.js` - Subida a SharePoint
+- `refresh_workspace.js` - Actualización de Power BI
+
+#### Librerías Compartidas
+- `lib/auth-handler.js` - Gestión de autenticación
+- `lib/session-manager.js` - Persistencia de sesiones
+- `lib/salesforce-*` - Módulos específicos de Salesforce
+- `lib/file-utils.js` - Utilidades de archivos
+- `lib/constants.js` - Configuración centralizada
+- `lib/auto-updater.js` - Sistema de actualizaciones
+
+#### Aplicación Electron
+- `electron/main.js` - Proceso principal + verificación de actualizaciones
+- `electron/renderer.js` - Lógica de interfaz de usuario
+- `electron/preload.js` - Comunicación segura IPC
+- `electron/index.html` - Interfaz gráfica
+
+### Ejecución por Terminal (Desarrollo)
+
+```bash
+# Desde la carpeta src/
+
 # Pipeline completo (automático, minimizado)
 node run_full_pipeline.js
 

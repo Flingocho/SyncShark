@@ -1,5 +1,57 @@
 # 🔄 Flujo del Pipeline de Telemetría
 
+## 📦 Instalación y Configuración
+
+### Flujo de Instalación
+
+```
+Usuario → Descarga ZIP → Descomprime → Doble clic install.bat
+    ↓
+Verificar Git (opcional)
+    ↓
+Verificar Node.js (requerido)
+    ↓
+Verificar Python (requerido)
+    ↓
+Instalar dependencias npm
+    ↓
+Instalar pywinauto
+    ↓
+Crear archivo .env
+    ↓
+Crear acceso directo (Desktop → OneDrive → Carpeta proyecto)
+    ↓
+Abrir carpeta src para configurar .env
+    ↓
+¡Instalación completa!
+```
+
+### Sistema de Auto-Actualización
+
+```
+Usuario inicia SyncShark → Auto-updater verifica GitHub API
+    ↓
+¿Hay nueva versión?
+    ├─ No → Continuar normalmente
+    └─ Sí → Mostrar notificación + Diálogo nativo
+            ↓
+            Usuario hace clic "Actualizar Ahora"
+            ↓
+            Crear backup automático
+            ↓
+            Descargar ZIP de GitHub
+            ↓
+            Extraer archivos
+            ↓
+            Instalar dependencias
+            ↓
+            Reiniciar aplicación
+            ↓
+            ¡Versión actualizada!
+```
+
+---
+
 ## Diagrama de Flujo Completo
 
 ```mermaid
