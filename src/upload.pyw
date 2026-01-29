@@ -1,4 +1,5 @@
 from pywinauto import Application
+from pywinauto.findwindows import find_elements
 import time
 import sys
  
@@ -8,8 +9,20 @@ print(f"Path del archivo: {file_path}")
  
 # Esperar a que aparezca la ventana "Abrir" (en español) o "Open" (en inglés)
 print("Esperando ventana de dialog de archivos...")
-app = Application().connect(title_re=".*Abrir.*|.*Open.*", timeout=30)
-dialog = app.window(title_re=".*Abrir.*|.*Open.*")
+
+# Find all matching windows and select the file dialog specifically
+time.sleep(1)
+elements = find_elements(title_re=".*Abrir.*|.*Open.*", class_name="#32770")
+if not elements:
+    print("No se encontró ninguna ventana de diálogo")
+    sys.exit(1)
+
+print(f"Se encontraron {len(elements)} ventanas. Usando la más reciente...")
+# Get the most recent dialog (last in the list)
+target_element = elements[-1]
+
+app = Application().connect(handle=target_element.handle)
+dialog = app.window(handle=target_element.handle)
 print("Ventana encontrada")
  
 # Encontrar el control de edición (el campo de texto)
