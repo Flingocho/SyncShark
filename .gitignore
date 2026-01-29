@@ -31,3 +31,10 @@ Thumbs.db
 # Python cache
 __pycache__/
 *.pyc
+
+# Auto-updater temporary files
+update-temp.bat
+update.zip
+update-temp/
+backup/
+*.tmp
