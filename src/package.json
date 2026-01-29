@@ -3,6 +3,7 @@
   "version": "2.1.0",
   "description": "Automated pipeline: Salesforce Analytics → Excel Validation → SharePoint Upload → Workspace Refresh",
   "main": "electron/main.js",
+  "repository": "Flingocho/SyncShark",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --inspect",

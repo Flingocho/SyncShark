@@ -16,7 +16,16 @@ const logsContainer = document.getElementById('logsContainer');
 const statusIndicator = document.getElementById('statusIndicator');
 const statusText = document.getElementById('statusText');
 
+// Elementos de actualización
+const updateNotification = document.getElementById('updateNotification');
+const updateVersion = document.getElementById('updateVersion');
+const updateNotes = document.getElementById('updateNotes');
+const updateNowBtn = document.getElementById('updateNowBtn');
+const viewChangesBtn = document.getElementById('viewChangesBtn');
+const updateLaterBtn = document.getElementById('updateLaterBtn');
+
 let isRunning = false;
+let updateInfo = null;
 
 // Función para agregar logs
 function addLog(text, type = 'info') {
@@ -256,4 +265,64 @@ window.electronAPI.onPipelineError((error) => {
   addLog(`ERROR CRÍTICO: ${error.message}`, 'error');
   updateStatus('error', 'Error crítico del sistema');
   setButtonsEnabled(true);
+});
+
+/**
+ * Sistema de Actualizaciones
+ */
+
+// Recibir notificación de actualización disponible
+window.electronAPI.onUpdateAvailable((info) => {
+  updateInfo = info;
+  showUpdateNotification(info);
+});
+
+// Mostrar notificación de actualización
+function showUpdateNotification(info) {
+  updateVersion.textContent = `Versión ${info.latestVersion} disponible (Actual: ${info.currentVersion})`;
+  
+  // Mostrar las primeras líneas del changelog
+  const notes = info.releaseNotes || 'Sin notas de versión disponibles';
+  const shortNotes = notes.split('\n').slice(0, 5).join('\n');
+  updateNotes.textContent = shortNotes + (notes.split('\n').length > 5 ? '\n...' : '');
+  
+  updateNotification.style.display = 'block';
+  
+  // Log en consola también
+  addLog('🔄 Nueva actualización disponible: v' + info.latestVersion, 'info');
+}
+
+// Botón "Actualizar Ahora"
+updateNowBtn.addEventListener('click', async () => {
+  if (!updateInfo) return;
+  
+  updateNotification.style.display = 'none';
+  addLog('⬇️  Descargando e instalando actualización...', 'info');
+  updateStatus('running', 'Actualizando...');
+  
+  try {
+    const result = await window.electronAPI.installUpdate(updateInfo);
+    if (result.success) {
+      addLog('✅ Actualización instalada. La aplicación se reiniciará...', 'success');
+    } else {
+      addLog('❌ Error instalando actualización: ' + result.error, 'error');
+      updateStatus('error', 'Error en actualización');
+    }
+  } catch (error) {
+    addLog('❌ Error: ' + error.message, 'error');
+    updateStatus('error', 'Error en actualización');
+  }
+});
+
+// Botón "Ver Cambios"
+viewChangesBtn.addEventListener('click', () => {
+  if (updateInfo && updateInfo.releaseUrl) {
+    window.electronAPI.openExternal(updateInfo.releaseUrl);
+  }
+});
+
+// Botón "Más Tarde"
+updateLaterBtn.addEventListener('click', () => {
+  updateNotification.style.display = 'none';
+  addLog('ℹ️  Actualización pospuesta. Se verificará nuevamente más tarde.', 'info');
 });

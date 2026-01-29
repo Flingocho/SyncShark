@@ -249,6 +249,92 @@
       margin: 8px 0;
     }
 
+    /* Estilos para notificación de actualización */
+    .update-notification {
+      position: absolute;
+      top: 60px;
+      right: 16px;
+      width: 380px;
+      background: white;
+      border: 2px solid #019DF4;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1000;
+      animation: slideInRight 0.3s ease;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .update-content {
+      padding: 16px;
+    }
+
+    .update-icon {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .update-info {
+      margin-bottom: 16px;
+    }
+
+    .update-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .update-version {
+      font-size: 12px;
+      color: #019DF4;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .update-notes {
+      font-size: 10px;
+      color: #666;
+      max-height: 100px;
+      overflow-y: auto;
+      padding: 8px;
+      background: #f5f5f5;
+      border-radius: 3px;
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
+
+    .update-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-small {
+      padding: 4px 10px;
+      font-size: 9px;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #666;
+      border: 1px solid #d0d0d0;
+    }
+
+    .btn-ghost:hover {
+      background: #f5f5f5;
+      border-color: #999;
+    }
+
     .footer {
       padding: 6px 16px;
       background: #fafafa;
@@ -435,6 +521,23 @@
         <div class="status-indicator" id="statusIndicator"></div>
         <div class="status-text" id="statusText">Sistema en espera</div>
         <button class="clear-logs-btn" id="clearLogsBtn">Limpiar</button>
+      </div>
+    </div>
+
+    <!-- Notificación de actualización -->
+    <div class="update-notification" id="updateNotification" style="display: none;">
+      <div class="update-content">
+        <div class="update-icon">🔄</div>
+        <div class="update-info">
+          <div class="update-title">Nueva Actualización Disponible</div>
+          <div class="update-version" id="updateVersion">v0.0.0</div>
+          <div class="update-notes" id="updateNotes">Cargando...</div>
+        </div>
+        <div class="update-actions">
+          <button class="btn btn-primary btn-small" id="updateNowBtn">Actualizar Ahora</button>
+          <button class="btn btn-secondary btn-small" id="viewChangesBtn">Ver Cambios</button>
+          <button class="btn btn-ghost btn-small" id="updateLaterBtn">Más Tarde</button>
+        </div>
       </div>
     </div>
 

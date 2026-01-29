@@ -3,11 +3,14 @@
  * Proceso principal de Electron - Gestiona la ventana y la ejecución de scripts
  */
 
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
+const AutoUpdater = require('../lib/auto-updater');
+const packageJson = require('../package.json');
 
 let mainWindow;
+let autoUpdater;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -38,6 +41,9 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
+
+  // Inicializar auto-actualizador
+  initializeAutoUpdater();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -150,4 +156,81 @@ ipcMain.handle('clear-all-credentials', async () => {
     [],
     'Borrado de credenciales falló'
   );
+});
+
+/**
+ * Sistema de auto-actualización
+ */
+function initializeAutoUpdater() {
+  // Configurar auto-updater con el repositorio de GitHub
+  autoUpdater = new AutoUpdater({
+    currentVersion: packageJson.version,
+    repo: packageJson.repository || null, // Se configurará en package.json
+    checkInterval: 1000 * 60 * 60 * 6, // Verificar cada 6 horas
+    autoDownload: false
+  });
+
+  // Verificar actualizaciones 5 segundos después del inicio
+  setTimeout(() => {
+    checkForUpdatesAndNotify();
+  }, 5000);
+
+  // Verificar periódicamente cada 6 horas
+  setInterval(() => {
+    checkForUpdatesAndNotify();
+  }, 1000 * 60 * 60 * 6);
+}
+
+async function checkForUpdatesAndNotify() {
+  try {
+    const updateInfo = await autoUpdater.checkForUpdates();
+    
+    if (updateInfo && updateInfo.available) {
+      // Enviar notificación a la ventana
+      mainWindow.webContents.send('update-available', updateInfo);
+      
+      // Mostrar diálogo nativo opcional
+      const choice = await dialog.showMessageBox(mainWindow, {
+        type: 'info',
+        title: 'Actualización Disponible',
+        message: `Nueva versión ${updateInfo.latestVersion} disponible`,
+        detail: `Versión actual: ${updateInfo.currentVersion}\n\n¿Deseas actualizar ahora?`,
+        buttons: ['Actualizar Ahora', 'Ver Cambios', 'Más Tarde'],
+        defaultId: 0,
+        cancelId: 2
+      });
+
+      if (choice.response === 0) {
+        // Actualizar ahora
+        await autoUpdater.downloadAndInstall(updateInfo);
+        app.quit();
+      } else if (choice.response === 1) {
+        // Ver cambios en GitHub
+        require('electron').shell.openExternal(updateInfo.releaseUrl);
+      }
+    }
+  } catch (error) {
+    console.error('Error verificando actualizaciones:', error);
+  }
+}
+
+// Manejar verificación manual de actualizaciones
+ipcMain.handle('check-for-updates', async () => {
+  try {
+    const updateInfo = await autoUpdater.checkForUpdates();
+    return updateInfo;
+  } catch (error) {
+    return { error: error.message };
+  }
+});
+
+// Manejar instalación de actualización
+ipcMain.handle('install-update', async (event, updateInfo) => {
+  try {
+    await autoUpdater.downloadAndInstall(updateInfo);
+    app.quit();
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 });
